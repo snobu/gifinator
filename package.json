@@ -1,0 +1,19 @@
+{
+  "name": "toast",
+  "version": "0.0.1",
+  "description": "annotate gatsby toast gif",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "a-adcali@microsoft.com",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "gm": "~1.23.0",
+    "http": "0.0.0",
+    "formidable": "~1.0.17",
+    "util": "~0.10.3",
+    "node-wget": "~0.4.2"
+  }
+}
