@@ -75,7 +75,12 @@ function show_gif(response) {
 function onRequest(request, response) {
     if (request.method == 'GET') {
         displayForm(response);
-    } else if (request.method == 'POST') {
+    }
+    else if (request.method == 'HEAD') {
+        response.writeHead(200);
+        response.end();
+    }
+    else if (request.method == 'POST') {
         console.log('got POST');
         do_magick(request, response);
     }
