@@ -62,6 +62,7 @@ function do_magick(request, response) {
 	      .stroke("#000000")
 	      .fill('#ffffff')
 	      .font("./impact.ttf", 42)
+              .dither('false')
               .drawText(0, 0, pictext, 'South')
 	      .write(outfile, function (err) {
 	          if (!err) {
