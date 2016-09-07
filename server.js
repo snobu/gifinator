@@ -62,8 +62,8 @@ function do_magick(request, response) {
 	      .stroke("#000000")
 	      .fill('#ffffff')
 	      .font("./impact.ttf", 42)
-		.drawText(0, 0, pictext, 'South')
-	      .monitor()
+              .drawText(0, 0, pictext, 'South')
+              .dither(false)
 	      .write(outfile, function (err) {
 	          if (!err) {
 	              console.log('Image processing done.');
