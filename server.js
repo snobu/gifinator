@@ -12,19 +12,24 @@ function get_random_name() {
     return name.choose();
 }
 
+function respond_with_expectation_failed(response) {
+    console.log('Responding with HTTP 417 Expectation Failed');
+    response.writeHead(417, {
+        'Content-Type': 'text/plain'
+    });
+    response.write('I always wanted to return a HTTP 417 Expectation Failed.\n' +
+                   'By the way, we could not fetch the gif from the URL you specified.');
+    response.end();
+}
+
+
 function fetch_gif(gifurl, infile, response, callback_magick) {
     var options = {};
     try {
         var download = wget.download(gifurl, infile, options);
         download.on('error', function(err) {
-            console.log('wget error -- ' + err);
-            console.log('Responding with HTTP 417 Expectation Failed');
-            response.writeHead(417, {
-                'Content-Type': 'text/plain'
-            });
-            response.write('I always wanted to return a HTTP 417 Expectation Failed.\n' +
-                           'By the way, we could not fetch the gif from the URL you specified.');
-            response.end();
+            console.log('wget download.on(error) -- ' + err);
+            respond_with_expectation_failed(response);
         });
         download.on('start', function(filesize) {
             console.log('Fetching gif to: ' + infile);
@@ -41,7 +46,8 @@ function fetch_gif(gifurl, infile, response, callback_magick) {
         });
     }
     catch (e) {
-        console.error('wget failed: ' + e);
+        console.error('wget failed -- catch(e): ' + e);
+        respond_with_expectation_failed(response);
     }
 }
 
