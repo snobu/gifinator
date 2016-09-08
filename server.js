@@ -17,8 +17,9 @@ function fetch_gif(gifurl, infile, response, callback_magick) {
     try {
         var download = wget.download(gifurl, infile, options);
         download.on('error', function(err) {
-            console.log(err);
-            response.writeHead(417, {
+            console.log('wget error -- ' + err);
+            console.log('Responding with HTTP 417 Expectation Failed');
+            response.writeHead(404, {
                 'Content-Type': 'text/plain'
             });
             response.write('I always wanted to return a HTTP 417 Expectation Failed.\n' +
