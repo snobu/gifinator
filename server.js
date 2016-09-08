@@ -14,29 +14,34 @@ function get_random_name() {
 
 function fetch_gif(gifurl, infile, response, callback_magick) {
     var options = {};
-    var download = wget.download(gifurl, infile, options);
-    download.on('error', function(err) {
-        console.log(err);
-        response.writeHead(417, {
-            'Content-Type': 'text/plain'
+    try {
+        var download = wget.download(gifurl, infile, options);
+        download.on('error', function(err) {
+            console.log(err);
+            response.writeHead(417, {
+                'Content-Type': 'text/plain'
+            });
+            response.write('I always wanted to return a HTTP 417 Expectation Failed.\n' +
+                           'By the way, we could not fetch the gif from the URL you specified.');
+            response.end();
         });
-        response.write('I always wanted to return a HTTP 417 Expectations Failed.\n' +
-                       'By the way, we could not fetch the gif from the URL you specified.');
-        response.end();
-    });
-    download.on('start', function(filesize) {
-        console.log('Fetching gif to: ' + infile);
-        console.log('Download started: ' + filesize);
-    });
-    download.on('end', function(output) {
-        console.log(output);
-        callback_magick();
-    });
-    download.on('progress', function(progress) {
-        if (progress == 1) {
-            console.log('wget finished: ' + progress);
-        }
-    });
+        download.on('start', function(filesize) {
+            console.log('Fetching gif to: ' + infile);
+            console.log('Download started: ' + filesize);
+        });
+        download.on('end', function(output) {
+            console.log(output);
+            callback_magick();
+        });
+        download.on('progress', function(progress) {
+            if (progress == 1) {
+                console.log('wget finished: ' + progress);
+            }
+        });
+    }
+    catch (e) {
+        console.error('wget failed: ' + e);
+    }
 }
 
 
