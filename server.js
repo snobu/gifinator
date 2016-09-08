@@ -12,11 +12,17 @@ function get_random_name() {
     return name.choose();
 }
 
-function fetch_gif(gifurl, infile, callback) {
+function fetch_gif(gifurl, infile, response, callback_magick) {
     var options = {};
     var download = wget.download(gifurl, infile, options);
     download.on('error', function(err) {
         console.log(err);
+        response.writeHead(417, {
+            'Content-Type': 'text/plain'
+        });
+        response.write('I always wanted to return a HTTP 417 Expectations Failed.\n' +
+                       'By the way, we could not fetch the gif from the URL you specified.');
+        response.end();
     });
     download.on('start', function(filesize) {
         console.log('Fetching gif to: ' + infile);
@@ -24,7 +30,7 @@ function fetch_gif(gifurl, infile, callback) {
     });
     download.on('end', function(output) {
         console.log(output);
-        callback();
+        callback_magick();
     });
     download.on('progress', function(progress) {
         if (progress == 1) {
@@ -53,10 +59,10 @@ function do_magick(request, response) {
     }
     var form = new formidable.IncomingForm();
     form.parse(request, function (err, fields, files) {
-        var gifurl = fields.gifurl;
+        var gifurl = fields.gifurl || 'http://null'; // wget panics if passed undefined as URL
         var pictext = fields.text;
         console.log('Got text from form: ' + pictext);
-        fetch_gif(gifurl, infile, function () {
+        fetch_gif(gifurl, infile, response, function () {
             console.log('Calling imagemagick for ' + pictext);
 	    magick(infile)
 	      .stroke("#000000")
@@ -100,11 +106,17 @@ function redirect_to_outfile(response, name) {
 function onRequest(request, response) {
     if (request.method == 'GET' && request.url.match(/^\/p\/.+/)) {
         console.log('request.url = ' + request.url);
-        var img = fs.readFileSync(request.url.replace('/p/', 'p/'));
-        response.writeHead(200, {
-            'Content-Type': 'image/gif'
-        });
-        response.end(img, 'binary');
+        try {
+            var img = fs.readFileSync(request.url.replace('/p/', 'p/'));
+            response.writeHead(200, {
+                'Content-Type': 'image/gif'
+            });
+            response.end(img, 'binary');
+        }
+        catch (e) {
+            displayForm(response);
+        }
+            
     }
     else if (request.method == 'GET') {
         displayForm(response);
