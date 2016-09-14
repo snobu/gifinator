@@ -7,6 +7,8 @@ var http = require('http');
 var gm = require('gm');
 var magick = gm.subClass({imageMagick: true});
 
+var seconds = 0;
+
 function get_random_name() {
     var name = Moniker.generator([Moniker.adjective, Moniker.noun]);
     return name.choose();
@@ -17,11 +19,10 @@ function respond_with_expectation_failed(response) {
     response.writeHead(417, {
         'Content-Type': 'text/plain'
     });
-    response.write('I always wanted to return a HTTP 417 Expectation Failed.\n' +
-                   'By the way, we could not fetch the gif from the URL you specified.');
+    response.write('HTTP 417 Expectation Failed.\n' +
+                   'We could not fetch the gif from the URL you specified.');
     response.end();
 }
-
 
 function fetch_gif(gifurl, infile, response, callback_magick) {
     var options = {};
@@ -67,7 +68,7 @@ function do_magick(request, response) {
         catch (e) {
             console.error('Unable to create output directory: ' + e);
         }
-        
+
     }
     var form = new formidable.IncomingForm();
     form.parse(request, function (err, fields, files) {
@@ -75,22 +76,24 @@ function do_magick(request, response) {
         var pictext = fields.text;
         console.log('Got text from form: ' + pictext);
         fetch_gif(gifurl, infile, response, function () {
-            console.log('Calling imagemagick for ' + pictext);
-	    magick(infile)
-	      .stroke("#000000")
-	      .fill('#ffffff')
-	      .font("./impact.ttf", 42)
-              .dither(false)
-              .drawText(0, 0, pictext, 'South')
-	      .write(outfile, function (err) {
-	          if (!err) {
-	              console.log('Image processing done.');
-                      console.log('outfile: ' + outfile);
-		      redirect_to_outfile(response, name);
-		  }
-		  else console.log(err);
-              });
-	});
+        console.log('Calling imagemagick for ' + pictext);
+        console.time('magick_took');
+        seconds = (new Date()).getTime()/1000;
+        magick(infile)
+          .stroke("#000000")
+          .fill('#ffffff')
+          .font("./impact.ttf", 42)
+          .dither(false)
+          .drawText(0, 0, pictext, 'South')
+          .write(outfile, function (err) {
+              if (!err) {
+                  console.log('Image processing done.');
+                  console.log('outfile: ' + outfile);
+                  redirect_to_outfile(response, name);
+              }
+              else console.log(err);
+          });
+        });
     });
 }
 
@@ -120,15 +123,16 @@ function onRequest(request, response) {
         console.log('request.url = ' + request.url);
         try {
             var img = fs.readFileSync(request.url.replace('/p/', 'p/'));
+            console.timeEnd('magick_took');
             response.writeHead(200, {
-                'Content-Type': 'image/gif'
+                'Content-Type': 'image/gif',
+                'X-IMAGEMAGICK-TOOK': ((new Date()).getTime()/1000 - seconds).toFixed(2) + ' seconds'
             });
             response.end(img, 'binary');
         }
         catch (e) {
             displayForm(response);
         }
-            
     }
     else if (request.method == 'GET') {
         displayForm(response);
@@ -142,6 +146,6 @@ function onRequest(request, response) {
         do_magick(request, response);
     }
 }
- 
+
 http.createServer(onRequest).listen(process.env.PORT || 3000);
 console.log('Listening for requests on port ' + (process.env.PORT || 3000));
