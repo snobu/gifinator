@@ -145,6 +145,10 @@ function onRequest(request, response) {
         console.log('got POST');
         do_magick(request, response);
     }
+    else if (request.method == ('OPTIONS' || 'PUT' || 'DELETE' || 'TRACE' || 'CONNECT')) {
+        console.log('We do not know how to handle ' + request.method);
+        response.writeHead(501); // Not Implemented
+    }
 }
 
 http.createServer(onRequest).listen(process.env.PORT || 3000);
