@@ -1,7 +1,6 @@
 <html>
-
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/darkly/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" />
 <style>
     p {
         margin-bottom: 20px;
@@ -21,11 +20,15 @@
 </head>
 
 <body>
-    <kbd>Build: 112 -- Added X-IMAGEMAGICK-TOOK header to response</kbd>
+    <code>
+      Build: 115 -- Switched to Journal theme, added App Service logo<br>
+      Source here -- <a href="https://github.com/snobu/gifinator" title="GitHub">https://github.com/snobu/gifinator</a> -- Contributions welcome!
+    </code>
     <div class="container">
 
       <form class="form-signin" action="/" method="POST">
         <h2 class="form-signin-heading">Write on animated GIFs</h2>
+        <p>Need some inspiration? - <a href="http://giphy.com/" title="Giphy" target="_blank">http://giphy.com</a> (Right click on gifs -> Copy image address)</p>
         <p>  
           <label for="gifurl" class="sr-only">.gif URL</label>
           <input type="text" name="gifurl" class="form-control" placeholder=".gif URL" required autofocus>
@@ -40,8 +43,13 @@
     </form>
 
     </div> <!-- /container -->
-
+    
+    <div style="margin-top: 120px">
+      <center>
+        <p>Running on Azure App Service in a Linux worker</p>
+        <img src="https://azure.microsoft.com/svghandler/app-service/?width=60" />
+      </center>
+    </div>
 
 </body>
-
 </html>

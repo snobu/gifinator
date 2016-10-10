@@ -176,8 +176,17 @@ function onRequest(request, response) {
         response.end();
     }
     else if (request.method == 'POST') {
-        console.log('got POST');
+        console.log('Got POST');
         do_magick(request, response);
+    }
+    else if (request.method == 'OPTIONS' || 
+             request.method == 'PUT' ||
+             request.method == 'DELETE' ||
+             request.method == 'TRACE' ||
+             request.method == 'CONNECT') {
+        console.log('We do not know how to handle ' + request.method);
+        response.writeHead(501); // Not Implemented
+        response.end();
     }
 }
 
