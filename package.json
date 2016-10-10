@@ -1,7 +1,7 @@
 {
-  "name": "toast",
+  "name": "gifinator",
   "version": "0.0.1",
-  "description": "annotate gatsby toast gif",
+  "description": "Annotate animated GIFs",
   "scripts": {
     "start": "node server.js"
   },
