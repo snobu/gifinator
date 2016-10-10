@@ -8,6 +8,6 @@
   "watch_options": {
     "followSymlinks": true,
     "usePolling"   : true,
-    "interval"    : 5
+    "interval"    : 60
   }
 }
