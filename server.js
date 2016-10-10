@@ -9,6 +9,37 @@ var magick = gm.subClass({imageMagick: true});
 
 var seconds = 0;
 
+function get_font_size(text) {
+  var length = text.length;
+  console.log('length =' + length);
+  if (length < 18) {
+    return 42;
+  }
+  else if(length < 30) {
+    return 28;
+  }
+  else return 12;
+}
+
+// To do:
+//   diff file size /tmp/in.gif vs p/out.gif
+//   Try to return percent completed
+//   We need to be very quick and efficient here
+//   since we'll call this once every few seconds
+//   while we write to output gif
+function get_magick_left(outfile) {
+    try {
+        setTimeout(function() {
+            var stats = fs.statSync('/root/gifinator/' + outfile);
+            var fileSizeInBytes = stats.size;
+            console.log(fileSizeInBytes);
+        }, 1000);
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
 function get_random_name() {
     var name = Moniker.generator([Moniker.adjective, Moniker.noun]);
     return name.choose();
@@ -76,25 +107,28 @@ function do_magick(request, response) {
         var pictext = fields.text;
         console.log('Got text from form: ' + pictext);
         fetch_gif(gifurl, infile, response, function () {
-        console.log('Calling imagemagick for ' + pictext);
-        console.time('magick_took');
-        seconds = (new Date()).getTime()/1000;
-        magick(infile)
-          .stroke("#000000")
-          .fill('#ffffff')
-          .font("./impact.ttf", 42)
-          .dither(false)
-          .drawText(0, 0, pictext, 'South')
-          .write(outfile, function (err) {
-              if (!err) {
-                  console.log('Image processing done.');
-                  console.log('outfile: ' + outfile);
-                  redirect_to_outfile(response, name);
-              }
-              else console.log(err);
-          });
+            console.log('Calling imagemagick for ' + pictext);
+            console.time('magick_took');
+            seconds = (new Date()).getTime()/1000;
+            fontsize = get_font_size(pictext);
+            console.log('fontsize = ' + fontsize);
+            magick(infile)
+              .stroke("#000000")
+              .fill('#ffffff')
+              .font("./impact.ttf", fontsize)
+              .dither(false)
+              .drawText(0, 0, pictext, 'South')
+              .write(outfile, function (err) {
+                  if (!err) {
+                      console.log('Image processing done.');
+                      console.log('outfile: ' + outfile);
+                      redirect_to_outfile(response, name);
+                  }
+                  else console.log(err);
+              });
         });
     });
+    get_magick_left(outfile);
 }
 
 
