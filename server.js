@@ -16,9 +16,9 @@ function get_font_size(text) {
     return 42;
   }
   else if(length < 30) {
-    return 14;
+    return 22;
   }
-  else return 12;
+  else return 18;
 }
 
 // To do:
