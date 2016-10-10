@@ -30,7 +30,7 @@ function get_font_size(text) {
 function get_magick_left(outfile) {
     try {
         setTimeout(function() {
-            var stats = fs.statSync('/root/gifinator/' + outfile);
+            var stats = fs.statSync('p/' + outfile);
             var fileSizeInBytes = stats.size;
             console.log(fileSizeInBytes);
         }, 1000);
@@ -128,7 +128,6 @@ function do_magick(request, response) {
               });
         });
     });
-    get_magick_left(outfile);
 }
 
 
