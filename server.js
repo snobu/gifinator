@@ -179,7 +179,7 @@ function onRequest(request, response) {
         console.log('Got POST');
         do_magick(request, response);
     }
-    else if (request.method == 'OPTIONS' || 
+    else if (request.method == 'OPTIONS' ||
              request.method == 'PUT' ||
              request.method == 'DELETE' ||
              request.method == 'TRACE' ||
