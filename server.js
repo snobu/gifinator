@@ -46,17 +46,23 @@ function get_font_size(text) {
 //   We need to be very quick and efficient here
 //   since we'll call this once every few seconds
 //   while we write to output gif
-function get_magick_left(outfile) {
+function get_progress(requrl) {
+    let stats;
+    let result = -1;
+    let re = /[^\/]*$/g;
+    let file = re.exec(requrl);
     try {
-        setTimeout(function() {
-            var stats = fs.statSync('p/' + outfile);
-            var fileSizeInBytes = stats.size;
-            console.log(fileSizeInBytes);
-        }, 1000);
+        outstats = fs.statSync('p/' + file);
+        let outbytes = outstats.size;
+        instats = fs.statSync('/tmp/' + file);
+        let inbytes = instats.size;
+        let diff = inbytes - outbytes;
+        result = diff; 
     }
     catch (e) {
         console.error(e);
     }
+    return String(result); // -1 is error, anything else is percent completed
 }
 
 function get_random_name() {
@@ -106,7 +112,7 @@ function fetch_gif(gifurl, infile, response, callback_magick) {
 
 function do_magick(request, response) {
     var name = get_random_name();
-    var infile = '/tmp/' + name;
+    var infile = '/tmp/' + name + '.gif';
     console.log('infile set to: ' + infile);
     var outfile = 'p/' + name + '.gif';
     console.log('outfile set to: ' + outfile);
@@ -186,6 +192,12 @@ function onRequest(request, response) {
         catch (e) {
             displayForm(response);
         }
+    }
+    else if (request.method == 'GET' && request.url.match(/^\/progress\//)) {
+        response.writeHead(200);
+        console.log('HEY  ' + get_progress(request.url));
+        response.write(get_progress(request.url));
+        response.end();
     }
     else if (request.method == 'GET') {
         displayForm(response);
