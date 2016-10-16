@@ -50,7 +50,7 @@ function get_progress(requrl) {
     let stats;
     let result = -1;
     let re = /[^\/]*$/g;
-    let file = re.exec(requrl);
+    let file = re.exec(requrl) + '.gif';
     try {
         outstats = fs.statSync('p/' + file);
         let outbytes = outstats.size;
