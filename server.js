@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var Moniker = require('moniker');
 var wget = require('wget-improved');
 var util = require('util');
@@ -9,16 +11,33 @@ var magick = gm.subClass({imageMagick: true});
 
 var seconds = 0;
 
+function normalize_fetch_url(gifurl) {
+    var service;
+    if (gifurl.indexOf('imgur.com') != -1) {
+        service = 'imgur';
+    }
+    switch (service) {
+        case 'imgur':
+            let re = /[^\/]*$/g;
+            var normalized_url = 'http://i.imgur.com/' + re.exec(gifurl) + '.gif';
+            break;
+        default:
+            normalized_url = gifurl;
+    }
+    console.log('normalized url is ' + normalized_url);
+    return normalized_url;
+}
+
 function get_font_size(text) {
-  var length = text.length;
-  console.log('length =' + length);
-  if (length < 18) {
-    return 42;
-  }
-  else if(length < 30) {
-    return 26;
-  }
-  else return 24;
+    var length = text.length;
+    console.log('length =' + length);
+    if (length < 18) {
+        return 42;
+    }
+    else if (length < 30) {
+        return 26;
+    }
+    else return 24;
 }
 
 // To do:
@@ -56,9 +75,10 @@ function respond_with_expectation_failed(response) {
 }
 
 function fetch_gif(gifurl, infile, response, callback_magick) {
+    url = normalize_fetch_url(gifurl);
     var options = {};
     try {
-        var download = wget.download(gifurl, infile, options);
+        var download = wget.download(url, infile, options);
         download.on('error', function(err) {
             console.log('wget download.on(error) -- ' + err);
             respond_with_expectation_failed(response);
