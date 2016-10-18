@@ -1,4 +1,6 @@
-/*jshint esversion: 6 */
+/* jshint esversion: 6 */
+/* jshint node: true */
+'use strict';
 
 var Moniker = require('moniker');
 var wget = require('wget-improved');
@@ -12,7 +14,7 @@ var magick = gm.subClass({imageMagick: true});
 var seconds = 0;
 
 function normalize_fetch_url(gifurl) {
-    var service;
+    let service;
     if (gifurl.indexOf('imgur.com') != -1) {
         service = 'imgur';
     }
@@ -47,7 +49,8 @@ function get_font_size(text) {
 //   since we'll call this once every few seconds
 //   while we write to output gif
 function get_progress(requrl) {
-    let stats;
+    let outstats;
+    let instats;
     let result = -1;
     let re = /[^\/]*$/g;
     let file = re.exec(requrl) + '.gif';
@@ -81,8 +84,8 @@ function respond_with_expectation_failed(response) {
 }
 
 function fetch_gif(gifurl, infile, response, callback_magick) {
-    url = normalize_fetch_url(gifurl);
-    var options = {};
+    let url = normalize_fetch_url(gifurl);
+    let options = {};
     try {
         var download = wget.download(url, infile, options);
         download.on('error', function(err) {
@@ -135,8 +138,8 @@ function do_magick(request, response) {
         fetch_gif(gifurl, infile, response, function () {
             console.log('Calling imagemagick for ' + pictext);
             console.time('magick_took');
-            seconds = (new Date()).getTime()/1000;
-            fontsize = get_font_size(pictext);
+            let seconds = (new Date()).getTime()/1000;
+            let fontsize = get_font_size(pictext);
             console.log('fontsize = ' + fontsize);
             magick(infile)
               .stroke("#000000")
@@ -159,6 +162,17 @@ function do_magick(request, response) {
 
 function displayForm(response) {
     fs.readFile('form.htm', function (err, data) {
+        response.writeHead(200, {
+            'Content-Type': 'text/html',
+            'Content-Length': data.length
+        });
+        response.write(data);
+        response.end();
+    });
+}
+
+function show_middleman(response) {
+    fs.readFile('middleman.htm', function (err, data) {
         response.writeHead(200, {
             'Content-Type': 'text/html',
             'Content-Length': data.length
@@ -198,6 +212,9 @@ function onRequest(request, response) {
         console.log('HEY  ' + get_progress(request.url));
         response.write(get_progress(request.url));
         response.end();
+    }
+    else if (request.method == 'GET' && request.url.match(/middleman\.htm/)) {
+        show_middleman(response);
     }
     else if (request.method == 'GET') {
         displayForm(response);

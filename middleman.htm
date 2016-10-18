@@ -1,0 +1,24 @@
+<video autoplay loop style="width: 100%">
+    <source type="video/mp4" src="//i.imgur.com/ZwzYBJU.mp4">
+</video>
+<h3>Carrying out science...</h3>
+
+<script>
+function get_progress(file) {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/p/' + file, true);
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            var resp = request.responseText;
+        }
+        else {
+            // We reached our target server, but it returned an error
+        }
+    };
+    request.onerror = function() {
+       // There was a connection error of some sort
+    };
+    request.send();
+}
+</script>
