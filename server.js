@@ -147,10 +147,11 @@ function do_magick(request, response) {
                   if (!err) {
                       console.log('Image processing done.');
                       console.log('outfile: ' + outfile);
-                      redirect_to_outfile(response, name);
+                      //redirect_to_outfile(response, name);
                   }
                   else console.log(err);
               });
+            ack_request(response, name);
         });
     });
 }
@@ -179,8 +180,9 @@ function show_middleman(response) {
 }
 
 
-function redirect_to_outfile(response, name) {
-        response.writeHead(302, {
+function ack_request(response, name) {
+        // Respond with 202 Accepted
+        response.writeHead(202, {
             'Location': '/p/' + name + '.gif'
         });
         response.end();
@@ -205,12 +207,9 @@ function onRequest(request, response) {
     }
     else if (request.method == 'GET' && request.url.match(/^\/progress\//)) {
         response.writeHead(200);
-        console.log('HEY  ' + get_progress(request.url));
+        console.log('Progress.. ' + get_progress(request.url));
         response.write(get_progress(request.url));
         response.end();
-    }
-    else if (request.method == 'GET' && request.url.match(/middleman\.htm/)) {
-        show_middleman(response);
     }
     else if (request.method == 'GET') {
         displayForm(response);

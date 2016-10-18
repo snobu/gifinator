@@ -19,23 +19,31 @@
 </style>
 
 <script>
-// find a way to pass in moniker request url
-function get_progress() {
+function post() {
     var request = new XMLHttpRequest();
-    request.open('GET', '/my/url', true);
+    var gifurl = document.getElementById('gifurl').value;
+    var text = document.getElementById('text').value;
+    console.log('POST ' + gifurl + ' ' + text);
+    request.open('POST', '/', true);
+    request.setRequestHeader(
+            'Content-type', 'application/x-www-form-urlencoded'
+    );
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             // Success!
             var resp = request.responseText;
+            console.log('Response: ' + request.status + 
+                        ' ' + request.statusText);
+            console.dir('Location: ' + request.getResponseHeader('Location'));
         }
         else {
-            // We reached our target server, but it returned an error
+            console.error('error ' + request.status);
         }
     };
-    request.onerror = function() {
-       // There was a connection error of some sort
+    request.onerror = function(err) {
+       console.error(err); 
     };
-    request.send();
+    request.send('gifurl=' + gifurl + '&text=' + text);
 }
 </script>
 
@@ -47,21 +55,27 @@ function get_progress() {
     </code>
     <div class="container">
 
-      <form class="form-signin" action="/" method="POST">
+      <form id="form" class="form-signin" action="#" method="POST">
         <h2 class="form-signin-heading">Write on animated GIFs</h2>
         <p>Need some inspiration? - <a href="http://giphy.com/" title="Giphy" target="_blank">http://giphy.com</a> (Right click on gifs -> Copy image address)<br>imgur.com is fine too, we detect image ID from stuff like imgur.com/BlaHbLAh and fetch the .gif</p>
         <p>  
           <label for="gifurl" class="sr-only">.gif URL</label>
-          <input type="text" name="gifurl" class="form-control" placeholder=".gif URL" required autofocus>
+          <input type="text" id="gifurl" name="gifurl" class="form-control" placeholder=".gif URL" required autofocus>
         </p>
         <p>
           <label for="text" class="sr-only">Annotate with text</label>
-          <input type="text" name="text" class="form-control" placeholder="Annotate with text" required>
+          <input type="text" id="text" name="text" class="form-control" placeholder="Annotate with text" required>
         </p>
         <p>
           <button class="btn btn-lg btn-block" id="go" type="submit" onClick="document.getElementById('go').innerHTML = 'Performing MAGICK. Please wait...'">$ make gif</button>
         <p>
     </form>
+
+        <p>
+          <button onClick="post()">post ajax</button>
+        </p>
+
+
 
     </div> <!-- /container -->
     
