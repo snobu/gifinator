@@ -1,7 +1,3 @@
-/* jshint esversion: 6 */
-/* jshint node: true */
-'use strict';
-
 var Moniker = require('moniker');
 var wget = require('wget-improved');
 var util = require('util');
@@ -14,13 +10,13 @@ var magick = gm.subClass({imageMagick: true});
 var seconds = 0;
 
 function normalize_fetch_url(gifurl) {
-    let service;
+    var service;
     if (gifurl.indexOf('imgur.com') != -1) {
         service = 'imgur';
     }
     switch (service) {
         case 'imgur':
-            let re = /[^\/]*$/g;
+            var re = /[^\/]*$/g;
             var normalized_url = 'http://i.imgur.com/' + re.exec(gifurl) + '.gif';
             break;
         default:
@@ -49,17 +45,17 @@ function get_font_size(text) {
 //   since we'll call this once every few seconds
 //   while we write to output gif
 function get_progress(requrl) {
-    let outstats;
-    let instats;
-    let result = -1;
-    let re = /[^\/]*$/g;
-    let file = re.exec(requrl) + '.gif';
+    var outstats;
+    var instats;
+    var result = -1;
+    var re = /[^\/]*$/g;
+    var file = re.exec(requrl) + '.gif';
     try {
         outstats = fs.statSync('p/' + file);
-        let outbytes = outstats.size;
+        var outbytes = outstats.size;
         instats = fs.statSync('/tmp/' + file);
-        let inbytes = instats.size;
-        let diff = inbytes - outbytes;
+        var inbytes = instats.size;
+        var diff = inbytes - outbytes;
         result = diff; 
     }
     catch (e) {
@@ -84,8 +80,8 @@ function respond_with_expectation_failed(response) {
 }
 
 function fetch_gif(gifurl, infile, response, callback_magick) {
-    let url = normalize_fetch_url(gifurl);
-    let options = {};
+    var url = normalize_fetch_url(gifurl);
+    var options = {};
     try {
         var download = wget.download(url, infile, options);
         download.on('error', function(err) {
@@ -138,8 +134,8 @@ function do_magick(request, response) {
         fetch_gif(gifurl, infile, response, function () {
             console.log('Calling imagemagick for ' + pictext);
             console.time('magick_took');
-            let seconds = (new Date()).getTime()/1000;
-            let fontsize = get_font_size(pictext);
+            var seconds = (new Date()).getTime()/1000;
+            var fontsize = get_font_size(pictext);
             console.log('fontsize = ' + fontsize);
             magick(infile)
               .stroke("#000000")
