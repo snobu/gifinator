@@ -19,6 +19,30 @@
 </style>
 
 <script>
+function printDeploymentId() {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/api/deployment', true);
+    request.setRequestHeader(
+        'Accept', 'application/json'
+    );
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var body = request.responseText;
+            console.log('Response: ' + request.status + ' ' + request.statusText);
+            console.log('Body: ' + body);
+            var commitid = document.getElementById('commitid');
+            commitid.innerHTML = 'Deployment Id: ' + body;
+        }
+        else {
+            console.error('error ' + request.status);
+        }
+    };
+    request.onerror = function(err) {
+       console.error(err);
+    };
+    request.send();
+}
+
 function post() {
     var request = new XMLHttpRequest();
     var gifurl = document.getElementById('gifurl').value;
@@ -45,14 +69,23 @@ function post() {
     };
     request.send('gifurl=' + gifurl + '&text=' + text);
 }
+
+
+printDeploymentId();
 </script>
 
 </head>
 
 <body>
+
     <code>
-      Source here -- <a href="https://github.com/snobu/gifinator" title="GitHub">https://github.com/snobu/gifinator</a> -- Contributions welcome!
+        Source here -- <a href="https://github.com/snobu/gifinator" title="GitHub">https://github.com/snobu/gifinator</a> -- Contributions welcome!
     </code>
+    <br>
+    <code id="commitid">
+      <!-- commit id -->
+    </code>
+
     <div class="container">
 
       <form id="form" class="form-signin" action="#" method="POST">
