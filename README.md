@@ -6,3 +6,4 @@ A silly **Node.js** application to showcase the smoothness of ImageMagick in a L
 ![sample](https://github.com/snobu/gifinator/raw/master/README2.gif)
 
 ### http://gifinator.azurewebsites.net
+### http://gifinator.herokuapp.com
