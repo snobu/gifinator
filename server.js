@@ -6,6 +6,7 @@ var fs = require('fs');
 var http = require('http');
 var gm = require('gm');
 var magick = gm.subClass({imageMagick: true});
+var api = require('./api.js');
 
 var seconds = 0;
 
@@ -56,7 +57,7 @@ function get_progress(requrl) {
         instats = fs.statSync('/tmp/' + file);
         var inbytes = instats.size;
         var diff = inbytes - outbytes;
-        result = diff; 
+        result = diff;
     }
     catch (e) {
         console.error(e);
@@ -190,6 +191,7 @@ function ack_request(response, name) {
 
 
 function onRequest(request, response) {
+    // Serve static file from p/
     if (request.method == 'GET' && request.url.match(/^\/p\/.+/)) {
         console.log('request.url = ' + request.url);
         try {
@@ -205,23 +207,31 @@ function onRequest(request, response) {
             displayForm(response);
         }
     }
+    // /progress
     else if (request.method == 'GET' && request.url.match(/^\/progress\//)) {
         response.writeHead(200);
         console.log('Progress.. ' + get_progress(request.url));
         response.write(get_progress(request.url));
         response.end();
     }
+    // /api/deployment
+    else if (request.method == 'GET' && request.url.match(/^\/api\/deployment/)) {
+        response.writeHead(200);
+        // Get deployment id (commit at HEAD) and return 200 OK
+        api.get_deployment(response);
+    }
     else if (request.method == 'GET') {
         displayForm(response);
     }
     else if (request.method == 'HEAD') {
-        response.writeHead(200);
-        response.end();
+            response.writeHead(200);
+            response.end();
     }
     else if (request.method == 'POST') {
         console.log('Got POST');
         do_magick(request, response);
     }
+    // Not Implemented
     else if (request.method == 'OPTIONS' ||
              request.method == 'PUT' ||
              request.method == 'DELETE' ||
