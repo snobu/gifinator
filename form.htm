@@ -19,7 +19,29 @@
 </style>
 
 <script>
-function printDeploymentId() {
+function get_progress(location) {
+    var progressurl = location.replace('/p/', '/progress/').replace('.gif', '');
+    console.log('Trying progress URL ' + progressurl);
+    var resp = '';
+    var request = new XMLHttpRequest();
+    request.open('GET', progressurl, true);
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var resp = request.responseText;
+            console.log(resp);
+        }
+        else {
+            var resp = 'error';
+        }
+        return resp;
+    };
+    request.onerror = function() {
+        // There was a connection error of some sort
+    };
+    request.send();
+}
+
+function print_deploymentid() {
     var request = new XMLHttpRequest();
     request.open('GET', '/api/deployment', true);
     request.setRequestHeader(
@@ -59,6 +81,12 @@ function post() {
             console.log('Response: ' + request.status +
                         ' ' + request.statusText);
             console.dir('Location: ' + request.getResponseHeader('Location'));
+            var location = request.getResponseHeader('Location');
+            setInterval(function() {
+                console.log('loc ' + location);
+                console.log(get_progress(location));
+                // break if processing is done
+            }, 3000);
         }
         else {
             console.error('error ' + request.status);
@@ -68,10 +96,11 @@ function post() {
        console.error(err);
     };
     request.send('gifurl=' + gifurl + '&text=' + text);
+    return false; // should be using preventDefault()
 }
 
 
-printDeploymentId();
+print_deploymentid();
 </script>
 
 </head>
@@ -88,7 +117,7 @@ printDeploymentId();
 
     <div class="container">
 
-      <form id="form" class="form-signin" action="#" method="POST">
+      <div id="form" class="form-signin">
         <h2 class="form-signin-heading">Write on animated GIFs</h2>
         <p>Need some inspiration? - <a href="http://giphy.com/" title="Giphy" target="_blank">http://giphy.com</a> (Right click on gifs -> Copy image address)<br>imgur.com is fine too, we detect image ID from stuff like imgur.com/BlaHbLAh and fetch the .gif</p>
         <p>
@@ -100,9 +129,10 @@ printDeploymentId();
           <input type="text" id="text" name="text" class="form-control" placeholder="Annotate with text" required>
         </p>
         <p>
-          <button class="btn btn-lg btn-block" id="go" type="submit" onClick="post()">Make GIF</button>
+          <button class="btn btn-lg btn-block" id="go" type="submit"
+              onClick="post()" onsubmit="return false">Make GIF</button>
         <p>
-    </form>
+    </div>
 
     </div> <!-- /container -->
 
