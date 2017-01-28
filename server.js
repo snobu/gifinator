@@ -7,6 +7,7 @@ var http = require('http');
 var gm = require('gm');
 var magick = gm.subClass({imageMagick: true});
 var api = require('./api.js');
+var chokidar = require('chokidar'); // filesystem events
 
 var seconds = 0;
 
@@ -51,6 +52,12 @@ function get_progress(requrl) {
     var result = -1;
     var re = /[^\/]*$/g;
     var file = re.exec(requrl) + '.gif';
+   
+    // do we use chokidar or roll our own?
+    chokidar.watch('p/' + file).on('all', (event, path) => {
+        console.log('[FS EVENT] ' + event, path);
+    });
+    
     try {
         outstats = fs.statSync('p/' + file);
         var outbytes = outstats.size;

@@ -18,7 +18,13 @@
     }
 </style>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 <script>
+var prev_size = 0;
+var current_size = 0;
+var counter = 0;
+
 function get_progress(location) {
     var progressurl = location.replace('/p/', '/progress/').replace('.gif', '');
     console.log('Trying progress URL ' + progressurl);
@@ -27,8 +33,21 @@ function get_progress(location) {
     request.open('GET', progressurl, true);
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
+            var button = document.getElementById('go');
             var resp = request.responseText;
-            console.log(resp);
+            console.log('BUTTON TEXT = ' + resp);
+            button.innerText = resp;
+            current_size = resp;
+            if (prev_size == current_size) {
+                counter++;
+            }                     
+            if (counter == 3) {
+                //button.innerText =   'PROBABLY READY';
+                window.clearInterval();
+                window.location.href = location;
+            }
+            prev_size = current_size;
+            console.log('counter='+counter);
         }
         else {
             var resp = 'error';
@@ -84,8 +103,7 @@ function post() {
             var location = request.getResponseHeader('Location');
             setInterval(function() {
                 console.log('loc ' + location);
-                console.log(get_progress(location));
-                // break if processing is done
+                get_progress(location);
             }, 3000);
         }
         else {

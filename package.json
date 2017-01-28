@@ -8,6 +8,7 @@
   "author": "a-adcali@microsoft.com",
   "license": "MIT",
   "dependencies": {
+    "chokidar": "^1.6.1",
     "formidable": "~1.0.17",
     "fs": "0.0.1-security",
     "gm": "~1.23.0",
