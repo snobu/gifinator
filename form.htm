@@ -110,6 +110,7 @@ function post() {
         }
         else {
             console.error('error ' + request.status);
+            button.innerText = request.responseText;;
         }
     };
     request.onerror = function(err) {
