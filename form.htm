@@ -26,6 +26,7 @@ var current_size = 0;
 var counter = 0;
 
 function get_progress(location) {
+    var button = document.getElementById('go');
     var progressurl = location.replace('/p/', '/progress/').replace('.gif', '');
     console.log('Trying progress URL ' + progressurl);
     var resp = '';
@@ -33,7 +34,6 @@ function get_progress(location) {
     request.open('GET', progressurl, true);
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-            var button = document.getElementById('go');
             var resp = request.responseText;
             console.log('BUTTON TEXT = ' + resp);
             button.innerText = resp;
@@ -85,6 +85,8 @@ function print_deploymentid() {
 }
 
 function post() {
+    var button = document.getElementById('go');
+    button.innerText = 'Fetching GIF...';
     var request = new XMLHttpRequest();
     var gifurl = document.getElementById('gifurl').value;
     var text = document.getElementById('text').value;
