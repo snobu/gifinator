@@ -8,6 +8,7 @@
   "author": "adcaline@microsoft.com",
   "license": "MIT",
   "dependencies": {
+    "chokidar": "^1.6.1",
     "formidable": "~1.0.17",
     "fs": "0.0.1-security",
     "gm": "~1.23.0",
@@ -18,7 +19,5 @@
     "util": "~0.10.3",
     "wget-improved": "^1.3.0"
   },
-  {
     "engines": { "node" : "<6.7.0" }
-  }
 }
