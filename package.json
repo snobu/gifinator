@@ -1,11 +1,11 @@
 {
   "name": "gifinator",
-  "version": "0.0.1",
-  "description": "Annotate animated GIFs",
+  "version": "0.71",
+  "description": "Write on animated GIFs with ImageMagick",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "a-adcali@microsoft.com",
+  "author": "adcaline@microsoft.com",
   "license": "MIT",
   "dependencies": {
     "formidable": "~1.0.17",
@@ -17,5 +17,8 @@
     "node-wget": "~0.4.2",
     "util": "~0.10.3",
     "wget-improved": "^1.3.0"
+  },
+  {
+    "engines": { "node" : "<6.7.0" }
   }
 }
