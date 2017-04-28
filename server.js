@@ -30,7 +30,6 @@ function normalize_fetch_url(gifurl) {
 
 function get_font_size(text) {
     var length = text.length;
-    console.log('length =' + length);
     if (length < 18) {
         return 42;
     }
@@ -52,12 +51,15 @@ function get_progress(requrl) {
     var result = -1;
     var re = /[^\/]*$/g;
     var file = re.exec(requrl) + '.gif';
-   
-    // do we use chokidar or roll our own?
-    chokidar.watch('p/' + file).on('all', (event, path) => {
-        console.log('[FS EVENT] ' + event, path);
-    });
+
+    // Do we use chokidar or roll our own?
+    // A risky question to ask at 38,000 ft
+    // after off-by-one red wine refills
     
+    // chokidar.watch('p/' + file).on('all', (event, path) => {
+    //    console.log('[FS EVENT] ' + event, path);
+    // });
+
     try {
         outstats = fs.statSync('p/' + file);
         var outbytes = outstats.size;
@@ -144,7 +146,6 @@ function do_magick(request, response) {
             console.time('magick_took');
             var seconds = (new Date()).getTime()/1000;
             var fontsize = get_font_size(pictext);
-            console.log('fontsize = ' + fontsize);
             magick(infile)
               .stroke("#000000")
               .fill('#ffffff')
@@ -205,7 +206,7 @@ function onRequest(request, response) {
     // /progress
     else if (request.method == 'GET' && request.url.match(/^\/progress\//)) {
         response.writeHead(200);
-        console.log('Progress.. ' + get_progress(request.url));
+        // console.log('Progress.. ' + get_progress(request.url));
         response.write(get_progress(request.url));
         response.end();
     }
