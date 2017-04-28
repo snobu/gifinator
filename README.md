@@ -5,4 +5,6 @@ A silly **Node.js** application to showcase the smoothness of ImageMagick in a L
 ![sample](https://github.com/snobu/gifinator/raw/master/README.gif)
 
 ### http://gifinator.azurewebsites.net
-### http://gifinator.herokuapp.com
+
+### TO DO:
+- Switch to blob storage if 'STORAGE_ACCOUNT' App Setting is defined
