@@ -176,18 +176,6 @@ function displayForm(response) {
     });
 }
 
-function show_middleman(response) {
-    fs.readFile('middleman.htm', function (err, data) {
-        response.writeHead(200, {
-            'Content-Type': 'text/html',
-            'Content-Length': data.length
-        });
-        response.write(data);
-        response.end();
-    });
-}
-
-
 function ack_request(response, name) {
         // Respond with 202 Accepted
         response.writeHead(202, {
