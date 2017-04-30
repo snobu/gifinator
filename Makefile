@@ -2,7 +2,7 @@ all:
 	make --no-print-directory hint
 
 hint:
-	jshint server.js
+	node_modules/jshint/bin/jshint server.js
 
 run:
 	node server.js
