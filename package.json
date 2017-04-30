@@ -1,6 +1,6 @@
 {
   "name": "gifinator",
-  "version": "0.71",
+  "version": "0.80",
   "description": "Write on animated GIFs with ImageMagick",
   "scripts": {
     "start": "node server.js"
